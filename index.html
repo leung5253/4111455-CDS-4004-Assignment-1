@@ -1,0 +1,113 @@
+<!doctype html>
+<head>
+  <title>Online Todo List</title>
+  <style>
+    .cat1 {
+      color: red;
+    }
+    .cat2 {
+      color: black;
+    }
+    .cat3 {
+      color: grey;
+    }
+    button {
+      padding: 20px 40px;
+      color: grey;
+      background-color: white;
+      box-shadow: 1px 1px 5px grey;
+      border: none;
+      border-radius: 30px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+    .completed {
+      text-decoration: line-through;
+    }
+    li {
+      padding: 10px;
+      margin: 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      background-color: white;
+      box-shadow: 1px 1px 5px grey;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="input-section">
+    <textarea
+      id="taskinput"
+      style="width: 100%; height: 60px; font-size: 20px"
+    ></textarea>
+  </div>
+  <div
+    class="button-section"
+    style="display: flex; gap: 10px; justify-content: center"
+  >
+    <button id="add">ADD</button>
+    <button id="toggle">TOGGLE</button>
+    <button id="email">EMAIL</button>
+  </div>
+  <div class="todolist-section">
+    <ol id="todolist"></ol>
+  </div>
+  <script>
+    document.getElementById("add").addEventListener("click", function () {
+      const input = document.getElementById("taskinput").value.trim();
+      if (!input) return;
+      const tasks = input
+        .split(";")
+        .map((task) => task.trim())
+        .filter((task) => task);
+      tasks.forEach((task) => {
+        const parts = task.split(",");
+        if (parts.length < 2) return;
+        const content = parts[0].trim();
+        const category = parts[1].trim();
+        const li = document.createElement("li");
+        li.textContent = content;
+        if (category === "1") {
+          li.className = "cat1";
+        } else if (category === "2") {
+          li.className = "cat2";
+        } else if (category === "3") {
+          li.className = "cat3";
+        }
+        li.addEventListener("click", function () {
+          this.classList.toggle("completed");
+          if (!showCompleted && this.classList.contains("completed")) {
+            this.classList.add("hidden");
+          }
+        });
+        li.addEventListener("dblclick", function () {
+          const taskText = this.textContent;
+          const userConfirmed = confirm(
+            `Are you sure you want to delete: "${taskText}"?`,
+          );
+          if (userConfirmed) {
+            this.remove();
+          }
+        });
+        document.getElementById("todolist").appendChild(li);
+      });
+    });
+
+    let showCompleted = true;
+    document.getElementById("toggle").addEventListener("click", function () {
+      showCompleted = !showCompleted;
+      const completedItems = document.querySelectorAll(".completed");
+      completedItems.forEach((item) => {
+        if (showCompleted) {
+          item.classList.remove("hidden");
+        } else {
+          item.classList.add("hidden");
+        }
+      });
+    });
+  </script>
+</body>
